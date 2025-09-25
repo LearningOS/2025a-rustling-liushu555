@@ -9,14 +9,14 @@
 // Execute `rustlings hint clippy1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 use std::f32;
 
 fn main() {
-    let pi = 3.14f32;
+    // 用更精确的圆周率常量，避免硬编码
+    let pi = std::f32::consts::PI;
     let radius = 5.00f32;
 
+    // 计算圆面积，powi 用于整数次幂
     let area = pi * f32::powi(radius, 2);
 
     println!(

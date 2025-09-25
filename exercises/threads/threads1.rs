@@ -8,7 +8,6 @@
 // Execute `rustlings hint threads1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
 use std::thread;
 use std::time::{Duration, Instant};
@@ -24,9 +23,14 @@ fn main() {
         }));
     }
 
+    // 用于保存每个线程的运行时间（毫秒）
     let mut results: Vec<u128> = vec![];
+    // 遍历所有线程句柄，等待线程结束并收集返回值
     for handle in handles {
-        // TODO: a struct is returned from thread::spawn, can you use it?
+        // handle 是 JoinHandle，调用 join() 等待线程结束并获取返回值
+        // join() 返回 Result<T, E>，T 是线程返回值，这里是 u128
+        let elapsed = handle.join().expect("Thread panicked");
+        results.push(elapsed);
     }
 
     if results.len() != 10 {

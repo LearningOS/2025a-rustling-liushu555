@@ -2,11 +2,11 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
-use std::vec::*;
+
 
 #[derive(Debug)]
 struct Node<T> {
@@ -35,6 +35,7 @@ impl<T> Default for LinkedList<T> {
     }
 }
 
+// 无约束的impl块，提供new方法
 impl<T> LinkedList<T> {
     pub fn new() -> Self {
         Self {
@@ -43,6 +44,10 @@ impl<T> LinkedList<T> {
             end: None,
         }
     }
+}
+
+// T 需要实现 PartialOrd 和 Clone，合并等方法
+impl<T: PartialOrd + Clone> LinkedList<T> {
 
     pub fn add(&mut self, obj: T) {
         let mut node = Box::new(Node::new(obj));
@@ -69,15 +74,39 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+    /// 合并两个有序单链表，返回新的有序单链表
+    pub fn merge(mut list_a:LinkedList<T>, mut list_b:LinkedList<T>) -> Self {
+        let mut result = LinkedList::<T>::new();
+        // 获取当前节点指针
+        let mut a_ptr = list_a.start;
+        let mut b_ptr = list_b.start;
+        // 遍历两个链表，逐步取较小值
+        while a_ptr.is_some() && b_ptr.is_some() {
+            let a_val = unsafe { &(*a_ptr.unwrap().as_ptr()).val };
+            let b_val = unsafe { &(*b_ptr.unwrap().as_ptr()).val };
+            if a_val <= b_val {
+                // 添加a链表当前值
+                result.add(a_val.clone());
+                a_ptr = unsafe { (*a_ptr.unwrap().as_ptr()).next };
+            } else {
+                // 添加b链表当前值
+                result.add(b_val.clone());
+                b_ptr = unsafe { (*b_ptr.unwrap().as_ptr()).next };
+            }
         }
-	}
+        // 剩余部分直接添加
+        while a_ptr.is_some() {
+            let a_val = unsafe { &(*a_ptr.unwrap().as_ptr()).val };
+            result.add(a_val.clone());
+            a_ptr = unsafe { (*a_ptr.unwrap().as_ptr()).next };
+        }
+        while b_ptr.is_some() {
+            let b_val = unsafe { &(*b_ptr.unwrap().as_ptr()).val };
+            result.add(b_val.clone());
+            b_ptr = unsafe { (*b_ptr.unwrap().as_ptr()).next };
+        }
+        result
+    }
 }
 
 impl<T> Display for LinkedList<T>

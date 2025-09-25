@@ -27,7 +27,6 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
 
 // Your task is to complete this implementation and return an Ok result of inner
 // type Color. You need to create an implementation for a tuple of three
@@ -41,6 +40,13 @@ enum IntoColorError {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (r, g, b) = tuple;
+        // 检查每个分量是否在 0..=255 范围内，否则返回 IntConversion 错误
+        if !(0..=255).contains(&r) || !(0..=255).contains(&g) || !(0..=255).contains(&b) {
+            return Err(IntoColorError::IntConversion);
+        }
+        // 安全转换为 u8 并构造 Color
+        Ok(Color { red: r as u8, green: g as u8, blue: b as u8 })
     }
 }
 
@@ -48,6 +54,13 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let [r, g, b] = arr;
+        // 检查每个分量是否在 0..=255 范围内，否则返回 IntConversion 错误
+        if !(0..=255).contains(&r) || !(0..=255).contains(&g) || !(0..=255).contains(&b) {
+            return Err(IntoColorError::IntConversion);
+        }
+        // 安全转换为 u8 并构造 Color
+        Ok(Color { red: r as u8, green: g as u8, blue: b as u8 })
     }
 }
 
@@ -55,6 +68,19 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        // 长度必须为3，否则返回 BadLen 错误
+        if slice.len() != 3 {
+            return Err(IntoColorError::BadLen);
+        }
+        let r = slice[0];
+        let g = slice[1];
+        let b = slice[2];
+        // 检查每个分量是否在 0..=255 范围内，否则返回 IntConversion 错误
+        if !(0..=255).contains(&r) || !(0..=255).contains(&g) || !(0..=255).contains(&b) {
+            return Err(IntoColorError::IntConversion);
+        }
+        // 安全转换为 u8 并构造 Color
+        Ok(Color { red: r as u8, green: g as u8, blue: b as u8 })
     }
 }
 
